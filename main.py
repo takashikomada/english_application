@@ -62,6 +62,27 @@ st.set_page_config(
 # タイトル表示
 st.markdown(f"## {ct.APP_NAME}")
 
+# ==== LLMまわりのセッション初期化（Cloud対策） ====
+if "openai_obj" not in st.session_state:
+    st.session_state.openai_obj = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
+if "llm" not in st.session_state:
+    st.session_state.llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0.5)
+
+if "memory" not in st.session_state:
+    st.session_state.memory = ConversationSummaryBufferMemory(
+        llm=st.session_state.llm,
+        max_token_limit=1000,
+        return_messages=True
+    )
+
+if "chain_basic_conversation" not in st.session_state:
+    # モード「日常英会話」用のChain作成
+    st.session_state.chain_basic_conversation = ft.create_chain(
+        ct.SYSTEM_TEMPLATE_BASIC_CONVERSATION
+    )
+# =============================================
+
 # 初期処理
 if "messages" not in st.session_state:
     st.session_state.messages = []
