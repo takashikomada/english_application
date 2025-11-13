@@ -214,6 +214,13 @@ if st.session_state.shadowing_flg:
 if st.session_state.dictation_flg:
     st.session_state.dictation_button_flg = st.button("ディクテーション開始")
 
+# 🔊 ディクテーション用の音声プレイヤー（rerun 対策）
+if (
+    "dictation_audio_bytes" in st.session_state
+    and st.session_state.mode == ct.MODE_3  # ディクテーションのときだけ表示
+):
+    st.audio(st.session_state.dictation_audio_bytes, format="audio/wav")
+
 # 「ディクテーション」モードのチャット入力受付時に実行
 if st.session_state.chat_open_flg:
     st.info(

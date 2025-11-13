@@ -100,16 +100,19 @@ def play_wav(audio_output_file_path, speed=1.0):
         )
         # 元の frame_rate に戻してピッチを維持
         modified_audio = modified_audio.set_frame_rate(audio.frame_rate)
-        # 一時ファイルに上書き保存
         modified_audio.export(audio_output_file_path, format="wav")
 
-    # ブラウザ側で再生（PyAudio は使わない）
+    # ブラウザ側で再生するためにバイト列に変換
     with open(audio_output_file_path, "rb") as f:
         audio_bytes = f.read()
+
+    # 🔸 ディクテーション用にセッションに保存（rerun 対策）
+    st.session_state["dictation_audio_bytes"] = audio_bytes
+
+    # この実行でもプレイヤーを表示
     st.audio(audio_bytes, format="audio/wav")
 
-    # Cloud 環境では削除すると再生タイミングで存在しないことがあるので、
-    # ファイルは残しておく（サーバ側で自動的にクリーンアップされます）
+    # ※ Cloud ではファイル削除はせず、サーバ側のクリーンアップに任せる
     # os.remove(audio_output_file_path)
 
 
