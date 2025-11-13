@@ -108,8 +108,9 @@ def play_wav(audio_output_file_path, speed=1.0):
         audio_bytes = f.read()
     st.audio(audio_bytes, format="audio/wav")
 
-    # 使い終わったら音声ファイルを削除
-    os.remove(audio_output_file_path)
+    # Cloud 環境では削除すると再生タイミングで存在しないことがあるので、
+    # ファイルは残しておく（サーバ側で自動的にクリーンアップされます）
+    # os.remove(audio_output_file_path)
 
 
 def create_chain(system_template):
